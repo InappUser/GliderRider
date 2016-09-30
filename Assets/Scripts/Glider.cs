@@ -6,9 +6,14 @@ public class Glider : MonoBehaviour {
 
 
     Vector3 initCameraDistance;
-    float movementSpeed = 1000f;
+    Vector3 gliderStart;
+    float movementSpeedRaw = 5000f;
     float startAccelerationSpeed = 1;
     float currentAccelerationSpeed = 1;
+    float accelerationTimeInterpolation = 0.0f;
+    float accelerationTIModifier = 0.3f;
+
+    bool slowed = false;
     float vertRotSpeed = 20f;
     float horiRotSpeed = 40f;
 
@@ -16,7 +21,6 @@ public class Glider : MonoBehaviour {
     float rollToYawMultiplier = .2f; 
 
     float recentreSpeed = .2f;
-    //Quaternion CentredRotation;
     Rigidbody myRigidbody;
 
 
@@ -26,6 +30,7 @@ public class Glider : MonoBehaviour {
         myRigidbody = transform.GetComponent<Rigidbody>();
         //CentredRotation = Quaternion.identity
         initCameraDistance = this.transform.position - gliderCamera.transform.position;
+        gliderStart = transform.forward;
     }
 	
 	// Update is called once per frame
@@ -47,34 +52,45 @@ public class Glider : MonoBehaviour {
         pitch = Input.GetAxisRaw("Vertical") * (Time.deltaTime * vertRotSpeed);
         yaw = 0;//(Input.GetAxisRaw("Horizontal") * (Time.deltaTime * horiRotSpeed));// * rollToYawMultiplier;
         roll = -(Input.GetAxisRaw("Horizontal") * (Time.deltaTime * horiRotSpeed)); //updating the roll and pitch rotaiton (y and x rotaiton, respectively)
-        print("pitch " + pitch);
 
-
-        //print(
-        //        "pitch " + pitch
-        //        + ", yaw " +yaw 
-        //        + ", roll " + roll
-        //    );
-        print("rigidbody rot: " + myRigidbody.rotation.eulerAngles);
-        rotToAdd.eulerAngles = new  Vector3(pitch, yaw, roll);
+        rotToAdd.eulerAngles = Vector3.Lerp(rotToAdd.eulerAngles, new Vector3(pitch * 20, yaw * 20, roll * 20), 10 * Time.deltaTime);
         myRigidbody.rotation *= rotToAdd;
+        //print("rigidbody rotation: " + myRigidbody.rotation.eulerAngles + " quaternion: "+ myRigidbody.rotation);
+        //if (myRigidbody.rotation.eulerAngles.x > 270 && myRigidbody.rotation.eulerAngles.x > 330)
+        print(Vector3.Distance(-transform.up, gliderStart));
+        if (Vector3.Distance(-transform.up, gliderStart) < 1.2f)
+        {
 
-        //if (myRigidbody.rotation.eulerAngles.x < 290 && myRigidbody.rotation.eulerAngles.x > 100)
-        //{
-        //    startAccelerationSpeed -= 0.1f;
-        //}
-        //else {
-        //    startAccelerationSpeed += 0.1f;
-        //}
+            currentAccelerationSpeed = Mathf.Lerp(currentAccelerationSpeed, startAccelerationSpeed - 0.9f, accelerationTimeInterpolation);
+            accelerationTimeInterpolation += accelerationTIModifier * Time.deltaTime;
+            // print("cur speed" + currentAccelerationSpeed);
+            ; if (currentAccelerationSpeed < startAccelerationSpeed - .8f)
+            {
+                slowed = true;
+                accelerationTimeInterpolation = 0.1f;
+            }
+            // print("slowing: "+slowed);
+        }
+        else if (slowed)
+        {
+            currentAccelerationSpeed = Mathf.Lerp(currentAccelerationSpeed, startAccelerationSpeed - 0.2f, accelerationTimeInterpolation);
+            accelerationTimeInterpolation += accelerationTIModifier * Time.deltaTime;
 
-        //startAccelerationSpeed = Mathf.Clamp(startAccelerationSpeed, 0.1f, 1.9f);
+            if (currentAccelerationSpeed > 1) slowed = false;
+        }
+        //  print("cur speed" + currentAccelerationSpeed);
+        startAccelerationSpeed = Mathf.Clamp(startAccelerationSpeed, 0.1f, 1.9f);
 
-        //movementSpeed *= startAccelerationSpeed;
 
 
-        Vector3 posToAdd = Vector3.forward;
+        float movementSpeed = movementSpeedRaw * currentAccelerationSpeed;
+        //print("glider start: " + gliderStart);
+        Vector3 posToAdd = gliderStart;// + new Vector3(0,-.1f,0);
         posToAdd = myRigidbody.rotation * posToAdd;
         myRigidbody.velocity = posToAdd * (Time.deltaTime * movementSpeed);
+        //  transform.forward = myRigidbody.velocity.normalized;
+        print("movement * gravity: " + (Physics.gravity * 1000) / movementSpeed);
+        myRigidbody.AddForce((Physics.gravity * 1000) / movementSpeed, ForceMode.Acceleration); //providing gravity to the rigid body
 
     }
 
