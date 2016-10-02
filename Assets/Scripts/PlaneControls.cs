@@ -4,9 +4,9 @@ using System.Collections;
 public class PlaneControls : MonoBehaviour
 {
 
-
+    public float waitBeforeGlide = 3f;
     public float cameraSpring = 0.96f;
-    public float speed = 5f;
+    public float baseSpeed = 6f;
     public float cameraDistance = 15.0f;
     public float cameraHeight = 5.0f;
     public float momentum = 30.0f;
@@ -36,8 +36,8 @@ public class PlaneControls : MonoBehaviour
         Debug.Log("plane controls script added successfully");
         Cursor.visible = false;
 
-        currentSpeed = speed;
-        print("speed: " + speed);
+        currentSpeed = baseSpeed;
+        //print("speed: " + baseSpeed);
         speedBoostTimer = 0;
         beenBoosted = false;
         boostSpeed = false;
@@ -56,7 +56,13 @@ public class PlaneControls : MonoBehaviour
             Cursor.visible = true;
         }
 
-        // 
+        SimulateGilding();
+       
+    }
+    void SimulateGilding()
+    {
+        
+
         Vector3 camChaser = transform.position - transform.forward * cameraDistance + Vector3.up * cameraHeight;
         Camera.main.transform.position = Camera.main.transform.position * cameraSpring + camChaser * (1.0f - cameraSpring);
         Camera.main.transform.LookAt(transform.position + transform.forward * 30.0f);
@@ -70,10 +76,11 @@ public class PlaneControls : MonoBehaviour
         // speed
         transform.position += transform.forward * Time.deltaTime * currentSpeed;
         currentSpeed -= transform.forward.y * Time.deltaTime * momentum;
-        if (currentSpeed < 5)
-        {
-            currentSpeed = 5;
-        }
+        //print("current:" + currentSpeed);
+        //if (currentSpeed < .5f)
+        //{
+        //    currentSpeed = .5f;
+        //}
 
         // plane rotation
         transform.Rotate(tilt, yaw, roll);
@@ -88,29 +95,29 @@ public class PlaneControls : MonoBehaviour
         }
     }
 
-
     void SpeedBoost()
     {
         //boost - interpolate between norm speed and boost
         if (beenBoosted == false)
         {
-            if (currentSpeed != boostedSpeed)
+            if (currentSpeed < boostedSpeed)
             {
-                currentSpeed = BoostLerpInterp(speed, boostedSpeed);
+                currentSpeed = BoostLerpInterp(baseSpeed, boostedSpeed+.1f); //make it aim for a little higher, otherwise it sometimes never reaches boostSpeed
             }
             else
             {
-                beenBoosted = true;
                 currentLerpTime = 0;
+                beenBoosted = true;
             }
         }
         //start timer
         speedBoostTimer += Time.deltaTime;
         //unboost 
         if (speedBoostTimer > speedBoostDuration) { //slowing down once timer has hit duration
-            if (currentSpeed != speed)
+            print("cur:" + currentSpeed + " speed:" + baseSpeed + " beenb "+beenBoosted +""+currentLerpTime);
+            if (currentSpeed > baseSpeed)
             {
-                currentSpeed = BoostLerpInterp(boostedSpeed, speed);
+                currentSpeed = BoostLerpInterp(boostedSpeed, baseSpeed - .1f);
             }
             else
             {

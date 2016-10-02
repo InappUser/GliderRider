@@ -1,95 +1,70 @@
 fileFormatVersion: 2
-guid: c34d5a24be9f8434182c3db5b2677893
-timeCreated: 1475321521
+guid: 1b3e35d3fac29bc49a70fbc0101b5c0c
+timeCreated: 1475427593
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: Cylinder
-    100002: Cylinder_001
-    100004: Cylinder_002
-    100006: Cylinder_003
+    100000: Inner
+    100002: Inner_1
+    100004: Inner_2
+    100006: Inner_3
     100008: //RootNode
     100010: Wobble_Base
-    100012: Wobble_Top
-    100014: WobbleArmature
-    100016: WobbleTop
-    100018: WobbleBase
-    100020: Inner
-    100022: Inner_001
-    100024: Inner_2
-    100026: Inner_3
-    100028: Inner_1
-    100030: Wobble_Base_001
-    100032: Wobble_Base_002
-    100034: Wobble_Base_003
-    100036: Wobble_Top_001
-    100038: Wobble_Top_002
-    100040: Wobble_Top_003
-    100042: WobbleTop_001
-    100044: WobbleTop_002
-    100046: WobbleTop_003
-    400000: Cylinder
-    400002: Cylinder_001
-    400004: Cylinder_002
-    400006: Cylinder_003
+    100012: Wobble_Base_001
+    100014: Wobble_Base_002
+    100016: Wobble_Base_003
+    100018: Wobble_Top
+    100020: Wobble_Top_001
+    100022: Wobble_Top_002
+    100024: Wobble_Top_003
+    100026: WobbleArmature
+    100028: WobbleBase
+    100030: WobbleTop
+    100032: WobbleTop_001
+    100034: WobbleTop_002
+    100036: WobbleTop_003
+    400000: Inner
+    400002: Inner_1
+    400004: Inner_2
+    400006: Inner_3
     400008: //RootNode
     400010: Wobble_Base
-    400012: Wobble_Top
-    400014: WobbleArmature
-    400016: WobbleTop
-    400018: WobbleBase
-    400020: Inner
-    400022: Inner_001
-    400024: Inner_2
-    400026: Inner_3
-    400028: Inner_1
-    400030: Wobble_Base_001
-    400032: Wobble_Base_002
-    400034: Wobble_Base_003
-    400036: Wobble_Top_001
-    400038: Wobble_Top_002
-    400040: Wobble_Top_003
-    400042: WobbleTop_001
-    400044: WobbleTop_002
-    400046: WobbleTop_003
-    2300000: Cylinder
-    2300002: Cylinder_001
-    2300004: Cylinder_002
-    2300006: Cylinder_003
-    2300008: Inner
-    2300010: Inner_001
-    2300012: Inner_2
-    2300014: Inner_3
-    2300016: Inner_1
-    3300000: Cylinder
-    3300002: Cylinder_001
-    3300004: Cylinder_002
-    3300006: Cylinder_003
-    3300008: Inner
-    3300010: Inner_001
-    3300012: Inner_2
-    3300014: Inner_3
-    3300016: Inner_1
-    4300000: Cylinder
-    4300002: Cylinder_002
-    4300004: Cylinder_001
-    4300006: Cylinder_003
-    4300008: WobbleTop
-    4300010: WobbleBase
-    4300012: Inner_001
-    4300014: Inner
-    4300016: Inner_3
-    4300018: Inner_2
-    4300020: Inner_1
-    4300022: WobbleTop_003
-    4300024: WobbleTop_002
-    4300026: WobbleTop_001
+    400012: Wobble_Base_001
+    400014: Wobble_Base_002
+    400016: Wobble_Base_003
+    400018: Wobble_Top
+    400020: Wobble_Top_001
+    400022: Wobble_Top_002
+    400024: Wobble_Top_003
+    400026: WobbleArmature
+    400028: WobbleBase
+    400030: WobbleTop
+    400032: WobbleTop_001
+    400034: WobbleTop_002
+    400036: WobbleTop_003
+    2300000: Inner
+    2300002: Inner_1
+    2300004: Inner_2
+    2300006: Inner_3
+    3300000: Inner
+    3300002: Inner_1
+    3300004: Inner_2
+    3300006: Inner_3
+    4300000: Inner_1
+    4300002: Inner
+    4300004: Inner_3
+    4300006: Inner_2
+    4300008: WobbleTop_001
+    4300010: WobbleTop_003
+    4300012: WobbleTop_002
+    4300014: WobbleTop
+    4300016: WobbleBase
     7400000: Default Take
     7400002: Wobble1
     9500000: //RootNode
-    13700000: WobbleTop
-    13700002: WobbleBase
+    13700000: WobbleBase
+    13700002: WobbleTop
     13700004: WobbleTop_001
     13700006: WobbleTop_002
     13700008: WobbleTop_003
@@ -118,7 +93,7 @@ ModelImporter:
       name: Default Take
       takeName: Default Take
       firstFrame: 0
-      lastFrame: 249
+      lastFrame: 73
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -141,13 +116,13 @@ ModelImporter:
       transformMask:
       - path: 
         weight: 1
-      - path: Cylinder
+      - path: Inner
         weight: 1
-      - path: Cylinder_001
+      - path: Inner_1
         weight: 1
-      - path: Cylinder_002
+      - path: Inner_2
         weight: 1
-      - path: Cylinder_003
+      - path: Inner_3
         weight: 1
       - path: WobbleArmature
         weight: 1
@@ -155,7 +130,27 @@ ModelImporter:
         weight: 1
       - path: WobbleArmature/Wobble_Base/Wobble_Top
         weight: 1
+      - path: WobbleArmature/Wobble_Base_001
+        weight: 1
+      - path: WobbleArmature/Wobble_Base_001/Wobble_Top_001
+        weight: 1
+      - path: WobbleArmature/Wobble_Base_002
+        weight: 1
+      - path: WobbleArmature/Wobble_Base_002/Wobble_Top_002
+        weight: 1
+      - path: WobbleArmature/Wobble_Base_003
+        weight: 1
+      - path: WobbleArmature/Wobble_Base_003/Wobble_Top_003
+        weight: 1
+      - path: WobbleBase
+        weight: 1
       - path: WobbleTop
+        weight: 1
+      - path: WobbleTop_001
+        weight: 1
+      - path: WobbleTop_002
+        weight: 1
+      - path: WobbleTop_003
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -187,13 +182,13 @@ ModelImporter:
       transformMask:
       - path: 
         weight: 1
-      - path: Cylinder
+      - path: Inner
         weight: 1
-      - path: Cylinder_001
+      - path: Inner_1
         weight: 1
-      - path: Cylinder_002
+      - path: Inner_2
         weight: 1
-      - path: Cylinder_003
+      - path: Inner_3
         weight: 1
       - path: WobbleArmature
         weight: 1
@@ -201,7 +196,27 @@ ModelImporter:
         weight: 1
       - path: WobbleArmature/Wobble_Base/Wobble_Top
         weight: 1
+      - path: WobbleArmature/Wobble_Base_001
+        weight: 1
+      - path: WobbleArmature/Wobble_Base_001/Wobble_Top_001
+        weight: 1
+      - path: WobbleArmature/Wobble_Base_002
+        weight: 1
+      - path: WobbleArmature/Wobble_Base_002/Wobble_Top_002
+        weight: 1
+      - path: WobbleArmature/Wobble_Base_003
+        weight: 1
+      - path: WobbleArmature/Wobble_Base_003/Wobble_Top_003
+        weight: 1
+      - path: WobbleBase
+        weight: 1
       - path: WobbleTop
+        weight: 1
+      - path: WobbleTop_001
+        weight: 1
+      - path: WobbleTop_002
+        weight: 1
+      - path: WobbleTop_003
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
