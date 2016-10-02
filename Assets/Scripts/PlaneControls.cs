@@ -11,12 +11,12 @@ public class PlaneControls : MonoBehaviour
     public float cameraHeight = 5.0f;
     public float momentum = 30.0f;
 
-    private Run run;
+ 
     private float currentSpeed; //used so that speed can be altered with boost
-    private bool speedBoosted = false;
+    private bool boostSpeed = false;
     private bool beenBoosted = false;
-    private float speedBoostTimer = 0f;
     private float speedBoostDuration = 3;
+    private float speedBoostTimer = 0;
     private float boostedSpeed = 50;
 
     //float speedFrom, speedTo;
@@ -24,23 +24,31 @@ public class PlaneControls : MonoBehaviour
     float lerpTime = 1f;
     float currentLerpTime;
 
+    public bool BoostSpeed{set{ boostSpeed = value;}}
 
     // Use this for initialization
     void Start()
+    {
+        Reset();
+    }
+    public void Reset()
     {
         Debug.Log("plane controls script added successfully");
         Cursor.visible = false;
 
         currentSpeed = speed;
-        run = GameObject.FindObjectOfType<Run>();
+        print("speed: " + speed);
+        speedBoostTimer = 0;
+        beenBoosted = false;
+        boostSpeed = false;
     }
 
     // want to do in fixedUpdate?
     void Update()
     {
-        if (speedBoosted)
+        if (boostSpeed)
         {
-            SpeedBoost();
+          SpeedBoost();
         }
 
         if (Input.GetKey(KeyCode.Escape))
@@ -50,7 +58,6 @@ public class PlaneControls : MonoBehaviour
 
         // 
         Vector3 camChaser = transform.position - transform.forward * cameraDistance + Vector3.up * cameraHeight;
-
         Camera.main.transform.position = Camera.main.transform.position * cameraSpring + camChaser * (1.0f - cameraSpring);
         Camera.main.transform.LookAt(transform.position + transform.forward * 30.0f);
 
@@ -62,8 +69,7 @@ public class PlaneControls : MonoBehaviour
 
         // speed
         transform.position += transform.forward * Time.deltaTime * currentSpeed;
-        speed -= transform.forward.y * Time.deltaTime * momentum;
-
+        currentSpeed -= transform.forward.y * Time.deltaTime * momentum;
         if (currentSpeed < 5)
         {
             currentSpeed = 5;
@@ -82,20 +88,7 @@ public class PlaneControls : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider col)
-    {
-        
-        if (col.name == "Fuel") {
-            //add points to run
-            run.FuelCanisterCollected();
-            //dissapear fuel
-            col.GetComponent<MeshRenderer>().enabled = false;
-            //lerp speed - maybe use 
-            speedBoosted = true;
-        }
-    }
 
- 
     void SpeedBoost()
     {
         //boost - interpolate between norm speed and boost
@@ -113,20 +106,21 @@ public class PlaneControls : MonoBehaviour
         }
         //start timer
         speedBoostTimer += Time.deltaTime;
-        //unboost - 
-        if (speedBoostTimer >= speedBoostDuration)
-        {
+        //unboost 
+        if (speedBoostTimer > speedBoostDuration) { //slowing down once timer has hit duration
             if (currentSpeed != speed)
             {
                 currentSpeed = BoostLerpInterp(boostedSpeed, speed);
             }
-            else {
+            else
+            {
                 speedBoostTimer = 0;
                 currentLerpTime = 0;
                 beenBoosted = false;
-                speedBoosted = false;
+                boostSpeed = false;
             }
         }
+        
         //if (beenBoosted == false && currentSpeed == speed) { // if before the waitForSeconds and before current speed begins lerping
         //    speedFrom = speed;
         //    speedTo = boostedSpeed;
@@ -143,7 +137,7 @@ public class PlaneControls : MonoBehaviour
         //    if (beenBoosted && speed == currentSpeed) { // condition for ending the function
         //        print("end functioN");
         //        beenBoosted = false; //resetting for next function use
-        //        speedBoosted = false;
+        //        boostSpeed = false;
         //        //yield return null;
         //    }
         //}
