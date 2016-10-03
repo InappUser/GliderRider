@@ -14,6 +14,7 @@ public class Run : MonoBehaviour {
     private int score;
     private int fuelCanisters;
     private bool isRunning = true;
+    private float timeBeforeReset = 2f;//after the player has hit the target, how long before the run resets
 
 
     public bool GetIsRunning()
@@ -72,7 +73,7 @@ public class Run : MonoBehaviour {
     {
         isRunning = false;
         AddToScore((int)targetLandingValues[lastCollidedName]);
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(timeBeforeReset);
         ResetRun();
     }
    void ResetRun()
@@ -86,13 +87,12 @@ public class Run : MonoBehaviour {
     }
     void ResetPlayer()
     {
-        print("ocur");
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         player.transform.position = playerSpawn.transform.position;
         player.transform.rotation = playerSpawn.transform.rotation;
         player.GetComponent<Rigidbody>().isKinematic = true; //resetting the physics for the glider
         player.GetComponent<Rigidbody>().isKinematic = false;
-        player.GetComponent<PlaneControls>().Reset();
+        // player.GetComponent<PlaneControls>().Reset(); // Commented out during refactoring to add landing target
 
     }
 }

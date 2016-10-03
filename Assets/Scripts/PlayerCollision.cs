@@ -6,7 +6,7 @@ public class PlayerCollision : MonoBehaviour {
 
     private bool startTargetRemainTimer = false; //make a struct for bool, timer, timer?
     private float targetRemainTimer=0;
-    private float targetRemainDuration = .1f;
+    private float targetRemainDuration = 2f;
 
     private bool startReducePhysSim = false;
     private float reducePhysSimTimer = 0;
@@ -36,8 +36,9 @@ public class PlayerCollision : MonoBehaviour {
     {
         if (col.transform.tag == "Target")
         {
-            //startTargetRemainTimer = false;
-            //targetRemainTimer = 0; //reset timer when they leave
+            GetComponent<PlaneControls>().land();
+            startTargetRemainTimer = false;
+            targetRemainTimer = 0; //reset timer when they leave
         }
     }
     void OnTriggerEnter(Collider col)
@@ -49,7 +50,7 @@ public class PlayerCollision : MonoBehaviour {
             //dissapear fuel
             col.gameObject.SetActive(false);
             //lerp speed 
-            GetComponent<PlaneControls>().BoostSpeed = true;
+          //  GetComponent<PlaneControls>().BoostSpeed = true; // Commented out during refactoring to add landing target
         }
     }
 
@@ -70,23 +71,15 @@ public class PlayerCollision : MonoBehaviour {
             Rigidbody rb = GetComponent<Rigidbody>();
             rb.drag = reducePhysSimTimer;
             rb.angularDrag= reducePhysSimTimer;
-            //print("end");
             reducePhysSimTimer += Time.deltaTime;
             if (reducePhysSimTimer > 5) {
                 rb.isKinematic = true; //truely resetting the physics
                 rb.isKinematic = false;
+                print("reset kin");
                 rb.drag = 0;
                 rb.angularDrag = 0;
                 startReducePhysSim = false;
             }
-            //Rigidbody rb = GetComponent<Rigidbody>();
-            //rb.velocity = Vector3.Lerp(rb.velocity, -rb.velocity, 10 * Time.deltaTime);
-            //if (rb.velocity.magnitude <= 0)
-            //{
-            //    rb.velocity = Vector3.zero;
-            //    print("end");
-            //    startReducePhysSim = false;
-            //}
         }
     }
 }

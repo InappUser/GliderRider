@@ -1,17 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlaneControls : MonoBehaviour
+public class PlaneControls: MonoBehaviour
 {
 
-    public float waitBeforeGlide = 3f;
-    public float cameraSpring = 0.96f;
-    public float baseSpeed = 6f;
-    public float cameraDistance = 15.0f;
-    public float cameraHeight = 5.0f;
-    public float momentum = 30.0f;
+    public float cameraSpring = 0.9f;
+    public float baseSpeed = 20f;
+    public float airResistance = 1f;
+    public float cameraDistance = 5.0f;
+    public float cameraHeight = 2.0f;
+    public float cameraForesight = 10f;
+    public float momentum = 10f;
+    public float zoomOut = 0;
 
- 
+    private float yaw;
+    private float tilt;
+    private float roll;
+    private bool landed;
+    private Vector3 camChaser;
+
     private float currentSpeed; //used so that speed can be altered with boost
     private bool boostSpeed = false;
     private bool beenBoosted = false;
@@ -56,42 +63,98 @@ public class PlaneControls : MonoBehaviour
             Cursor.visible = true;
         }
 
-        SimulateGilding();
+
        
+    }
+    void FixedUpdate()
+    {
+        SimulateGilding();
     }
     void SimulateGilding()
     {
-        
-
-        Vector3 camChaser = transform.position - transform.forward * cameraDistance + Vector3.up * cameraHeight;
-        Camera.main.transform.position = Camera.main.transform.position * cameraSpring + camChaser * (1.0f - cameraSpring);
-        Camera.main.transform.LookAt(transform.position + transform.forward * 30.0f);
-
-
-
-        float yaw = Input.GetAxis("Horizontal") / 2;
-        float tilt = Input.GetAxis("Vertical") / 2;
-        float roll = Input.GetAxis("Roll") / 2;
-
-        // speed
-        transform.position += transform.forward * Time.deltaTime * currentSpeed;
-        currentSpeed -= transform.forward.y * Time.deltaTime * momentum;
-        //print("current:" + currentSpeed);
-        //if (currentSpeed < .5f)
-        //{
-        //    currentSpeed = .5f;
-        //}
-
-        // plane rotation
-        transform.Rotate(tilt, yaw, roll);
-
-
 
         // collision with terrain
         float currentHeight = Terrain.activeTerrain.SampleHeight(transform.position);
         if (currentHeight > transform.position.y)
         {
             transform.position = new Vector3(transform.position.x, currentHeight, transform.position.z);
+            landed = true;
+            land();
+        }
+
+        // camera tracking (if low to ground angle higher)
+        if (currentHeight > transform.position.y - 20)
+        {
+            zoomOut = 10 - (transform.position.y - currentHeight);
+            camChaser = transform.position - transform.forward * cameraDistance + Vector3.up * (cameraHeight + zoomOut);
+            Camera.main.transform.position = Camera.main.transform.position * cameraSpring + camChaser * (1.0f - cameraSpring);
+            Camera.main.transform.LookAt(transform.position + transform.forward * cameraForesight);
+        }
+        else
+        {
+            camChaser = transform.position - transform.forward * cameraDistance + Vector3.up * cameraHeight;
+            Camera.main.transform.position = Camera.main.transform.position * cameraSpring + camChaser * (1.0f - cameraSpring);
+            Camera.main.transform.LookAt(transform.position + transform.forward * cameraForesight);
+        }
+
+        // turning controls
+        if (landed == false)
+        {
+            yaw = Input.GetAxis("Horizontal") / 2;
+            tilt = Input.GetAxis("Vertical") / 2;
+            roll = Input.GetAxis("Roll") / 2;
+        }
+        else
+        {
+            yaw = 0;
+            tilt = 0;
+            roll = 0;
+        }
+
+        transform.Rotate(tilt, yaw, roll);
+
+
+        // currentSpeed
+        transform.position += transform.forward * Time.deltaTime * currentSpeed;
+        currentSpeed -= transform.forward.y * Time.deltaTime * momentum;
+
+        // don't allow backward movement
+        if (currentSpeed < 0)
+        {
+            currentSpeed = 0;
+        }
+
+        // gradually cause desent of plane 
+        airResistance += 0.0001f;
+        currentSpeed -= 0.8f * Time.deltaTime;
+        transform.position += transform.up * Time.deltaTime * -airResistance;
+
+        
+    }
+
+    public static void Land()
+    { }
+        public void land()
+    {
+
+        if (currentSpeed >= 10 || currentSpeed <= 30)
+        {
+            // land
+            currentSpeed -= 25 * Time.deltaTime;
+            airResistance = 0;
+            cameraDistance = 30.0f;
+            cameraHeight = 30.0f;
+            momentum = 0.0f;
+        }
+        else
+        {
+            // crash
+            Debug.Log("CRASH LANDING");
+            currentSpeed = 0f;
+            airResistance = 0f;
+            cameraDistance = 30.0f;
+            cameraHeight = 30.0f;
+            momentum = 0.0f;
         }
     }
 
@@ -128,38 +191,7 @@ public class PlaneControls : MonoBehaviour
             }
         }
         
-        //if (beenBoosted == false && currentSpeed == speed) { // if before the waitForSeconds and before current speed begins lerping
-        //    speedFrom = speed;
-        //    speedTo = boostedSpeed;
-        //    print("setting init");
-        //}
-
-        ////change speed
-        //if (currentSpeed != speedTo)
-        //{
-        //    print("interpolating");
-        //    currentSpeed = BoostLerpInterp(speedFrom, speedTo);
-        //} else {
-        //    currentLerpTime = 0; //reset lerp timer for next use if the current speed has reached the end of the lerp
-        //    if (beenBoosted && speed == currentSpeed) { // condition for ending the function
-        //        print("end functioN");
-        //        beenBoosted = false; //resetting for next function use
-        //        boostSpeed = false;
-        //        //yield return null;
-        //    }
-        //}
-
-        ////wait for speed duration
-        ////yield return new WaitForSeconds(speedBoostDuration);
-        ////hit trigger to decrease speed
-        //if (beenBoosted == false)
-        //{
-        //    speedFrom = boostedSpeed; //swap which speed is to be lerped from and to
-        //    speedTo = speed;
-        //}
-        //beenBoosted = true; //change the state of the function
-        //print("hit");
-
+        
     }
 
 
@@ -176,4 +208,6 @@ public class PlaneControls : MonoBehaviour
         return  Mathf.Lerp(from, to, t);
         
     }
+
+
 }
