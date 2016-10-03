@@ -14,7 +14,6 @@ public class Run : MonoBehaviour {
     private int score;
     private int fuelCanisters;
     private bool isRunning = true;
-    private float timeBeforeReset = 2f;//after the player has hit the target, how long before the run resets
 
 
     public bool GetIsRunning()
@@ -42,7 +41,7 @@ public class Run : MonoBehaviour {
             else {
                 Debug.LogWarning("No TargetSpaceValue component on target object");
             }
-             print("t"+i + ( targetTs[i].name)+" = " + targetLandingValues[targetTs[i].name]);
+             //print("t"+i + ( targetTs[i].name)+" = " + targetLandingValues[targetTs[i].name]);
         }
 
     }
@@ -73,7 +72,7 @@ public class Run : MonoBehaviour {
     {
         isRunning = false;
         AddToScore((int)targetLandingValues[lastCollidedName]);
-        yield return new WaitForSeconds(timeBeforeReset);
+        yield return new WaitForSeconds(5);
         ResetRun();
     }
    void ResetRun()
@@ -87,6 +86,7 @@ public class Run : MonoBehaviour {
     }
     void ResetPlayer()
     {
+        print("ocur");
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         player.transform.position = playerSpawn.transform.position;
         player.transform.rotation = playerSpawn.transform.rotation;

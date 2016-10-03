@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlaneControls: MonoBehaviour
+public class PlaneControls : MonoBehaviour
 {
 
     public float cameraSpring = 0.9f;
@@ -31,7 +31,7 @@ public class PlaneControls: MonoBehaviour
     float lerpTime = 1f;
     float currentLerpTime;
 
-    public bool BoostSpeed{set{ boostSpeed = value;}}
+    public bool BoostSpeed { set { boostSpeed = value; } }
 
     // Use this for initialization
     void Start()
@@ -55,7 +55,7 @@ public class PlaneControls: MonoBehaviour
     {
         if (boostSpeed)
         {
-          SpeedBoost();
+            SpeedBoost();
         }
 
         if (Input.GetKey(KeyCode.Escape))
@@ -64,7 +64,7 @@ public class PlaneControls: MonoBehaviour
         }
 
 
-       
+
     }
     void FixedUpdate()
     {
@@ -129,18 +129,19 @@ public class PlaneControls: MonoBehaviour
         currentSpeed -= 0.8f * Time.deltaTime;
         transform.position += transform.up * Time.deltaTime * -airResistance;
 
-        
+
     }
 
     public static void Land()
     { }
-        public void land()
+    public void land()
     {
 
         if (currentSpeed >= 10 || currentSpeed <= 30)
         {
+            print("landing: " + currentSpeed);
             // land
-            currentSpeed -= 25 * Time.deltaTime;
+            currentSpeed -= 50 * Time.deltaTime;
             airResistance = 0;
             cameraDistance = 30.0f;
             cameraHeight = 30.0f;
@@ -165,7 +166,7 @@ public class PlaneControls: MonoBehaviour
         {
             if (currentSpeed < boostedSpeed)
             {
-                currentSpeed = BoostLerpInterp(baseSpeed, boostedSpeed+.1f); //make it aim for a little higher, otherwise it sometimes never reaches boostSpeed
+                currentSpeed = BoostLerpInterp(baseSpeed, boostedSpeed + .1f); //make it aim for a little higher, otherwise it sometimes never reaches boostSpeed
             }
             else
             {
@@ -176,8 +177,9 @@ public class PlaneControls: MonoBehaviour
         //start timer
         speedBoostTimer += Time.deltaTime;
         //unboost 
-        if (speedBoostTimer > speedBoostDuration) { //slowing down once timer has hit duration
-            print("cur:" + currentSpeed + " speed:" + baseSpeed + " beenb "+beenBoosted +""+currentLerpTime);
+        if (speedBoostTimer > speedBoostDuration)
+        { //slowing down once timer has hit duration
+            print("cur:" + currentSpeed + " speed:" + baseSpeed + " beenb " + beenBoosted + "" + currentLerpTime);
             if (currentSpeed > baseSpeed)
             {
                 currentSpeed = BoostLerpInterp(boostedSpeed, baseSpeed - .1f);
@@ -190,12 +192,12 @@ public class PlaneControls: MonoBehaviour
                 boostSpeed = false;
             }
         }
-        
-        
+
+
     }
 
 
-    float BoostLerpInterp( float from, float to)
+    float BoostLerpInterp(float from, float to)
     {
         currentLerpTime += Time.deltaTime;
         if (currentLerpTime > lerpTime)
@@ -205,8 +207,8 @@ public class PlaneControls: MonoBehaviour
         float t = currentLerpTime / lerpTime; //providing percentage
         t = 1f - Mathf.Cos(t * Mathf.PI * 0.5f);
         t = t * t;
-        return  Mathf.Lerp(from, to, t);
-        
+        return Mathf.Lerp(from, to, t);
+
     }
 
 
